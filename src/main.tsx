@@ -13,10 +13,13 @@ import {
 } from "@automerge/react";
 import { getOrCreateRoot, RootDocument } from "./rootDoc.ts";
 
+// Create the WebSocket adapter separately so we can expose it for diagnostics
+const wsAdapter = new WebSocketClientAdapter("ws://localhost:3030");
+
 const repo = new Repo({
   network: [
     new BroadcastChannelNetworkAdapter(),
-    new WebSocketClientAdapter("wss://sync.automerge.org"),
+    wsAdapter,
   ],
   storage: new IndexedDBStorageAdapter(),
 });
@@ -26,11 +29,14 @@ const repo = new Repo({
 declare global {
   interface Window {
     repo: Repo;
+    wsAdapter: any;
     // We also add the handle to the global window object for debugging
     handle: DocHandle<RootDocument>;
   }
 }
 window.repo = repo;
+// Expose adapter for status UI (shape is not part of public API, hence any)
+window.wsAdapter = wsAdapter as any;
 
 // Depending if we have an AutomergeUrl, either find or create the document
 const rootDocUrl = getOrCreateRoot(repo);
