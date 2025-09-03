@@ -71,6 +71,21 @@ function App({ docUrl }: { docUrl: AutomergeUrl }) {
             <div>
               <strong>Sync server:</strong> <code>{syncServer}</code>
             </div>
+            <div style={{ marginTop: "0.5rem" }}>
+              <a
+                role="button"
+                className="secondary"
+                href={selectedId ? `/ocv/index.html?server=${encodeURIComponent(syncServer)}&docId=${encodeURIComponent(selectedId)}` : undefined}
+                target="_blank"
+                rel="noreferrer"
+                aria-disabled={!selectedId}
+                onClick={(e) => {
+                  if (!selectedId) e.preventDefault();
+                }}
+              >
+                Open Canvas
+              </a>
+            </div>
           </small>
         </article>
 
